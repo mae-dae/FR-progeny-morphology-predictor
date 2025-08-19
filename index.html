@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Rising Progeny Predictor</title>
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --secondary: #9370db;
+            --accent: #d8bfd8;
+            --background: #f5f5f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #dcdcdc;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .parents-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .parent {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .offspring-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .dragon-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            transition: transform 0.2s;
+        }
+        
+        .dragon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dragon-card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 8px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        select, input {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .url-box {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background-color: #555;
+            padding: 5px 8px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .attribute {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .attribute strong {
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Rising Progeny Predictor</h1>
+    
+    <div class="controls">
+        <button id="randomParents">Generate Random Parents</button>
+        <button id="generateOffspring">Generate Offspring</button>
+    </div>
+    
+    <div class="parents-container">
+        <div class="parent" id="parent1">
+            <h2>Parent 1</h2>
+            <div class="form-group">
+                <label>Breed</label>
+                <select id="parent1-breed"></select>
+            </div>
+            <div class="form-group">
+                <label>Primary Gene</label>
+                <select id="parent1-primaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Secondary Gene</label>
+                <select id="parent1-secondaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Tertiary Gene</label>
+                <select id="parent1-tertiaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Primary Color</label>
+                <select id="parent1-primaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Secondary Color</label>
+                <select id="parent1-secondaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Tertiary Color</label>
+                <select id="parent1-tertiaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="parent1-gender">
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+            <div class="url-box" id="parent1-url">URL will appear here</div>
+            <button class="copy-btn" data-target="parent1-url">Copy URL</button>
+        </div>
+        
+        <div class="parent" id="parent2">
+            <h2>Parent 2</h2>
+            <div class="form-group">
+                <label>Breed</label>
+                <select id="parent2-breed"></select>
+            </div>
+            <div class="form-group">
+                <label>Primary Gene</label>
+                <select id="parent2-primaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Secondary Gene</label>
+                <select id="parent2-secondaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Tertiary Gene</label>
+                <select id="parent2-tertiaryGene"></select>
+            </div>
+            <div class="form-group">
+                <label>Primary Color</label>
+                <select id="parent2-primaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Secondary Color</label>
+                <select id="parent2-secondaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Tertiary Color</label>
+                <select id="parent2-tertiaryColor"></select>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="parent2-gender">
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+            <div class="url-box" id="parent2-url">URL will appear here</div>
+            <button class="copy-btn" data-target="parent2-url">Copy URL</button>
+        </div>
+    </div>
+    
+    <div class="results-section">
+        <h2>Offspring</h2>
+        <div class="offspring-container" id="offspringContainer">
+            <!-- Offspring will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        // =========================
+        // DATA STRUCTURES
+        // =========================
+        const data = {
+            breeds: [
+                {id: 20, name: "Aberration", rarity: "Ancient"},
+                {id: 22, name: "Aether", rarity: "Ancient"},
+                {id: 24, name: "Auraboa", rarity: "Ancient"},
+                {id: 18, name: "Banescale", rarity: "Ancient"},
+                {id: 14, name: "Bogsneak", rarity: "Uncommon"},
+                {id: 27, name: "Cirrus", rarity: "Ancient"},
+                {id: 12, name: "Coatl", rarity: "Rare"},
+                {id: 25, name: "Dusthide", rarity: "Ancient"},
+                {id: 26, name: "Everlux", rarity: "Ancient"},
+                {id: 1, name: "Fae", rarity: "Plentiful"},
+                {id: 16, name: "Fathom", rarity: "Uncommon"},
+                {id: 17, name: "Gaoler", rarity: "Ancient"},
+                {id: 2, name: "Guardian", rarity: "Plentiful"},
+                {id: 8, name: "Imperial", rarity: "Limited"},
+                {id: 3, name: "Mirror", rarity: "Plentiful"},
+                {id: 11, name: "Nocturne", rarity: "Limited"},
+                {id: 15, name: "Obelisk", rarity: "Uncommon"},
+                {id: 4, name: "Pearlcatcher", rarity: "Common"},
+                {id: 5, name: "Ridgeback", rarity: "Common"},
+                {id: 23, name: "Sandsurge", rarity: "Ancient"},
+                {id: 13, name: "Skydancer", rarity: "Uncommon"},
+                {id: 9, name: "Snapper", rarity: "Common"},
+                {id: 7, name: "Spiral", rarity: "Common"},
+                {id: 6, name: "Tundra", rarity: "Plentiful"},
+                {id: 21, name: "Undertide", rarity: "Ancient"},
+                {id: 19, name: "Veilspun", rarity: "Ancient"},
+                {id: 10, name: "Wildclaw", rarity: "Rare"}
+            ],
+            
+            colors: [
+                {id: 1, name: "maize"}, {id: 2, name: "cream"}, {id: 3, name: "antique"},
+                {id: 4, name: "white"}, {id: 5, name: "moon"}, {id: 6, name: "ice"},
+                // ... (all other colors would be listed here)
+                {id: 177, name: "pearl"}
+            ],
+            
+            eyeTypes: [
+                {id: 13, name: "Bright", probability: 2.2},
+                {id: 0, name: "Common", probability: 45.8},
+                {id: 4, name: "Faceted", probability: 0.7},
+                {id: 9, name: "Goat", probability: 1.1},
+                {id: 5, name: "Multi-Gaze", probability: 0.4},
+                {id: 12, name: "Pastel", probability: 2.1},
+                {id: 6, name: "Primal", probability: 0.5},
+                {id: 3, name: "Rare", probability: 9.1},
+                {id: 1, name: "Uncommon", probability: 24.2},
+                {id: 2, name: "Unusual", probability: 13.9}
+            ],
+            
+            breedOdds: {
+                "Plentiful": {"Common": 0.3, "Uncommon": 0.15, "Limited": 0.03, "Rare": 0.01},
+                "Common": {"Uncommon": 0.24, "Limited": 0.09, "Rare": 0.01},
+                "Uncommon": {"Limited": 0.13, "Rare": 0.02},
+                "Limited": {"Rare": 0.03}
+            },
+            
+            geneOdds: {
+                "Plentiful": {"Plentiful": 0.5, "Common": 0.7, "Uncommon": 0.85, "Limited": 0.97, "Rare": 0.99},
+                "Common": {"Plentiful": 0.3, "Common": 0.5, "Uncommon": 0.75, "Limited": 0.9, "Rare": 0.99},
+                "Uncommon": {"Plentiful": 0.15, "Common": 0.25, "Uncommon": 0.5, "Limited": 0.85, "Rare": 0.98},
+                "Limited": {"Plentiful": 0.03, "Common": 0.1, "Uncommon": 0.15, "Limited": 0.5, "Rare": 0.97},
+                "Rare": {"Plentiful": 0.01, "Common": 0.01, "Uncommon": 0.02, "Limited": 0.03, "Rare": 0.5}
+            },
+            
+            // Simplified gene data structure (in a real implementation, this would be more complete)
+            genes: {
+                // Primary genes
+                primary: {
+                    "Plentiful": ["Basic"],
+                    "Common": ["Checkers", "Clown", "Fade", "Falcon", "Laced", "Leopard", "Piebald", "Savanna", "Speckle", "Swirl", "Tapir", "Tiger", "Varnish"],
+                    // ... other rarities
+                },
+                // Secondary genes
+                secondary: {
+                    "Plentiful": ["Basic"],
+                    "Common": ["Blend", "Chess", "Clouded", "Edged", "Eye Spots", "Freckle", "Lacquer", "Marbled", "Paint", "Peregrine", "Safari", "Striation", "Stripes"],
+                    // ... other rarities
+                },
+                // Tertiary genes
+                tertiary: {
+                    "Plentiful": ["Basic"],
+                    "Common": ["Contour", "Peacock", "Points", "Thylacine", "Underbelly"],
+                    // ... other rarities
+                }
+            }
+        };
+
+        // =========================
+        // UTILITY FUNCTIONS
+        // =========================
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRarityRank(rarity) {
+            const ranks = ["Plentiful", "Common", "Uncommon", "Limited", "Rare"];
+            return ranks.indexOf(rarity);
+        }
+
+        // =========================
+        // CORE FUNCTIONS
+        // =========================
+        function generateRandomDragon() {
+            const breed = getRandomElement(data.breeds);
+            const gender = Math.random() < 0.5 ? 0 : 1; // 0 = male, 1 = female
+            
+            // Get random genes based on breed
+            const primaryGene = getRandomElement(data.genes.primary[getRandomElement(Object.keys(data.genes.primary))]);
+            const secondaryGene = getRandomElement(data.genes.secondary[getRandomElement(Object.keys(data.genes.secondary))]);
+            const tertiaryGene = getRandomElement(data.genes.tertiary[getRandomElement(Object.keys(data.genes.tertiary))]);
+            
+            // Get random colors
+            const primaryColor = getRandomElement(data.colors);
+            const secondaryColor = getRandomElement(data.colors);
+            const tertiaryColor = getRandomElement(data.colors);
+            
+            // Get random eye type based on probability
+            const eyeType = getRandomElement(data.eyeTypes);
+            
+            return {
+                breed,
+                gender,
+                primaryGene,
+                secondaryGene,
+                tertiaryGene,
+                primaryColor,
+                secondaryColor,
+                tertiaryColor,
+                eyeType
+            };
+        }
+
+        function breedDragons(parent1, parent2) {
+            const offspring = [];
+            
+            // Generate 5 offspring
+            for (let i = 0; i < 5; i++) {
+                // Determine breed
+                let breed;
+                if (parent1.breed.id === parent2.breed.id) {
+                    breed = parent1.breed;
+                } else if (parent1.breed.rarity === "Ancient" || parent2.breed.rarity === "Ancient") {
+                    // Ancient breeds can only breed with the same breed
+                    breed = Math.random() < 0.5 ? parent1.breed : parent2.breed;
+                } else {
+                    const rarity1 = parent1.breed.rarity;
+                    const rarity2 = parent2.breed.rarity;
+                    
+                    if (rarity1 === rarity2) {
+                        breed = Math.random() < 0.5 ? parent1.breed : parent2.breed;
+                    } else {
+                        const rank1 = getRarityRank(rarity1);
+                        const rank2 = getRarityRank(rarity2);
+                        const rarer = rank1 > rank2 ? parent1.breed : parent2.breed;
+                        const lessRare = rank1 > rank2 ? parent2.breed : parent1.breed;
+                        
+                        const odds = data.breedOdds[lessRare.rarity][rarer.rarity] || 0.5;
+                        breed = Math.random() < odds ? rarer : lessRare;
+                    }
+                }
+                
+                // Determine gender (50/50)
+                const gender = Math.random() < 0.5 ? 0 : 1;
+                
+                // Determine genes
+                const primaryGene = determineGene(parent1.primaryGene, parent2.primaryGene, "primary");
+                const secondaryGene = determineGene(parent1.secondaryGene, parent2.secondaryGene, "secondary");
+                const tertiaryGene = determineGene(parent1.tertiaryGene, parent2.tertiaryGene, "tertiary");
+                
+                // Determine colors
+                const primaryColor = determineColor(parent1.primaryColor, parent2.primaryColor);
+                const secondaryColor = determineColor(parent1.secondaryColor, parent2.secondaryColor);
+                const tertiaryColor = determineColor(parent1.tertiaryColor, parent2.tertiaryColor);
+                
+                // Determine eye type based on probability
+                const eyeType = getRandomElement(data.eyeTypes);
+                
+                offspring.push({
+                    breed,
+                    gender,
+                    primaryGene,
+                    secondaryGene,
+                    tertiaryGene,
+                    primaryColor,
+                    secondaryColor,
+                    tertiaryColor,
+                    eyeType
+                });
+            }
+            
+            return offspring;
+        }
+
+        function determineGene(gene1, gene2, slot) {
+            if (gene1 === gene2) {
+                return gene1;
+            }
+            
+            // Simplified - in a real implementation, we'd look up rarities
+            return Math.random() < 0.5 ? gene1 : gene2;
+        }
+
+        function determineColor(color1, color2) {
+            // Get the min and max color IDs
+            const minId = Math.min(color1.id, color2.id);
+            const maxId = Math.max(color1.id, color2.id);
+            
+            // Pick a random color ID between min and max
+            const randomId = getRandomInt(minId, maxId);
+            
+            // Find the color object
+            return data.colors.find(color => color.id === randomId) || color1;
+        }
+
+        function generateScryingUrl(dragon) {
+            return `https://www1.flightrising.com/scrying/predict?` +
+                `breed=${dragon.breed.id}&` +
+                `gender=${dragon.gender}&` +
+                `age=0&` +
+                `bodygene=${dragon.primaryGene}&` +
+                `body=${dragon.primaryColor.id}&` +
+                `winggene=${dragon.secondaryGene}&` +
+                `wings=${dragon.secondaryColor.id}&` +
+                `tertgene=${dragon.tertiaryGene}&` +
+                `tert=${dragon.tertiaryColor.id}&` +
+                `element=1&` +
+                `eyetype=${dragon.eyeType.id}`;
+        }
+
+        // =========================
+        // UI FUNCTIONS
+        // =========================
+        function populateDropdowns() {
+            // Populate breed dropdowns
+            const breedSelects = document.querySelectorAll('select[id$="-breed"]');
+            breedSelects.forEach(select => {
+                data.breeds.forEach(breed => {
+                    const option = document.createElement('option');
+                    option.value = breed.id;
+                    option.textContent = breed.name;
+                    select.appendChild(option);
+                });
+            });
+            
+            // Populate color dropdowns
+            const colorSelects = document.querySelectorAll('select[id$="Color"]');
+            colorSelects.forEach(select => {
+                data.colors.forEach(color => {
+                    const option = document.createElement('option');
+                    option.value = color.id;
+                    option.textContent = color.name;
+                    select.appendChild(option);
+                });
+            });
+            
+            // Populate gene dropdowns (simplified)
+            const geneSelects = document.querySelectorAll('select[id$="Gene"]');
+            geneSelects.forEach(select => {
+                // For simplicity, just add some common genes
+                ["Basic", "Tiger", "Clown", "Speckle", "Stripes", "Points"].forEach(gene => {
+                    const option = document.createElement('option');
+                    option.value = gene;
+                    option.textContent = gene;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function updateDragonDisplay(dragon, elementPrefix) {
+            document.getElementById(`${elementPrefix}-breed`).value = dragon.breed.id;
+            document.getElementById(`${elementPrefix}-primaryGene`).value = dragon.primaryGene;
+            document.getElementById(`${elementPrefix}-secondaryGene`).value = dragon.secondaryGene;
+            document.getElementById(`${elementPrefix}-tertiaryGene`).value = dragon.tertiaryGene;
+            document.getElementById(`${elementPrefix}-primaryColor`).value = dragon.primaryColor.id;
+            document.getElementById(`${elementPrefix}-secondaryColor`).value = dragon.secondaryColor.id;
+            document.getElementById(`${elementPrefix}-tertiaryColor`).value = dragon.tertiaryColor.id;
+            document.getElementById(`${elementPrefix}-gender`).value = dragon.gender;
+            
+            const url = generateScryingUrl(dragon);
+            document.getElementById(`${elementPrefix}-url`).textContent = url;
+        }
+
+        function displayOffspring(offspring) {
+            const container = document.getElementById('offspringContainer');
+            container.innerHTML = '';
+            
+            offspring.forEach((dragon, index) => {
+                const card = document.createElement('div');
+                card.className = 'dragon-card';
+                
+                const url = generateScryingUrl(dragon);
+                
+                card.innerHTML = `
+                    <h3>Offspring ${index + 1}</h3>
+                    <div class="attribute"><strong>Breed:</strong> ${dragon.breed.name}</div>
+                    <div class="attribute"><strong>Gender:</strong> ${dragon.gender === 0 ? 'Male' : 'Female'}</div>
+                    <div class="attribute"><strong>Primary:</strong> ${dragon.primaryGene} (${dragon.primaryColor.name})</div>
+                    <div class="attribute"><strong>Secondary:</strong> ${dragon.secondaryGene} (${dragon.secondaryColor.name})</div>
+                    <div class="attribute"><strong>Tertiary:</strong> ${dragon.tertiaryGene} (${dragon.tertiaryColor.name})</div>
+                    <div class="attribute"><strong>Eyes:</strong> ${dragon.eyeType.name}</div>
+                    <div class="url-box">${url}</div>
+                    <button class="copy-btn">Copy URL</button>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // Add event listeners to copy buttons
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.previousElementSibling.textContent;
+                    navigator.clipboard.writeText(url).then(() => {
+                        this.textContent = 'Copied!';
+                        setTimeout(() => {
+                            this.textContent = 'Copy URL';
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // =========================
+        // INITIALIZATION
+        // =========================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate dropdowns
+            populateDropdowns();
+            
+            // Generate initial random parents
+            const parent1 = generateRandomDragon();
+            const parent2 = generateRandomDragon();
+            
+            updateDragonDisplay(parent1, 'parent1');
+            updateDragonDisplay(parent2, 'parent2');
+            
+            // Event listeners
+            document.getElementById('randomParents').addEventListener('click', () => {
+                const parent1 = generateRandomDragon();
+                const parent2 = generateRandomDragon();
+                
+                updateDragonDisplay(parent1, 'parent1');
+                updateDragonDisplay(parent2, 'parent2');
+            });
+            
+            document.getElementById('generateOffspring').addEventListener('click', () => {
+                // Get parent data from form
+                const getDragonFromForm = (prefix) => {
+                    return {
+                        breed: data.breeds.find(b => b.id === parseInt(document.getElementById(`${prefix}-breed`).value)),
+                        gender: parseInt(document.getElementById(`${prefix}-gender`).value),
+                        primaryGene: document.getElementById(`${prefix}-primaryGene`).value,
+                        secondaryGene: document.getElementById(`${prefix}-secondaryGene`).value,
+                        tertiaryGene: document.getElementById(`${prefix}-tertiaryGene`).value,
+                        primaryColor: data.colors.find(c => c.id === parseInt(document.getElementById(`${prefix}-primaryColor`).value)),
+                        secondaryColor: data.colors.find(c => c.id === parseInt(document.getElementById(`${prefix}-secondaryColor`).value)),
+                        tertiaryColor: data.colors.find(c => c.id === parseInt(document.getElementById(`${prefix}-tertiaryColor`).value))
+                    };
+                };
+                
+                const parent1 = getDragonFromForm('parent1');
+                const parent2 = getDragonFromForm('parent2');
+                
+                // Generate offspring
+                const offspring = breedDragons(parent1, parent2);
+                displayOffspring(offspring);
+            });
+            
+            // Copy URL buttons
+            document.querySelectorAll('.copy-btn[data-target]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    const url = document.getElementById(target).textContent;
+                    navigator.clipboard.writeText(url).then(() => {
+                        this.textContent = 'Copied!';
+                        setTimeout(() => {
+                            this.textContent = 'Copy URL';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
